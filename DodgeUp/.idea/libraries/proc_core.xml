@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="proc-core">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/proc-core.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
