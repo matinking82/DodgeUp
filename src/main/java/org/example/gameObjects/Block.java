@@ -24,7 +24,7 @@ public class Block implements IShowableObject, IFallingObject {
 
         do {
             x = new Random().nextInt((Main.getWidth()-width)+1);
-        }while (x>(Main.lastBlockX-(2*width))&&x<(Main.lastBlockX+(3*width)));
+        }while (x>(Main.lastBlockX-(2.5*width))&&x<(Main.lastBlockX+(3.5*width)));
 
         Main.lastBlockX = x;
         Random random = new Random();
@@ -43,6 +43,14 @@ public class Block implements IShowableObject, IFallingObject {
             check = true;
             Main.canAdd = true;
         }
+
+        if (y>Main.getHeight()-Main.human.height-height){
+            if (Main.human.x>x-(Main.human.width/2)&&Main.human.x<x+width+(Main.human.width/2)){
+                Main.gameOver = true;
+                Main.pause = true;
+            }
+        }
+
         if (y>Main.getHeight()){
             return true;
         }

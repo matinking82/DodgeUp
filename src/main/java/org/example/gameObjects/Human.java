@@ -5,9 +5,9 @@ import org.example.gameObjects.interfaces.IShowableObject;
 
 public class Human implements IShowableObject {
 
-    private int x;
-    private int height;
-    private int width;
+    public int x;
+    public int height;
+    public int width;
 
 
     public Human(int x, int height, int width){
