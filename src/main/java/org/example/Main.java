@@ -1,13 +1,18 @@
 package org.example;
 
+import org.example.Models.GameRecord;
 import org.example.Services.GameRecordDbServices;
 import org.example.gameObjects.Block;
+import org.example.gameObjects.Heart;
 import org.example.gameObjects.Human;
+import org.example.gameObjects.Shield;
 import org.example.gameObjects.interfaces.IFallingObject;
 import processing.core.PApplet;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class Main extends PApplet{
 
@@ -15,12 +20,15 @@ public class Main extends PApplet{
     public static boolean gameOver = false;
     public static boolean pause = false;
     private List<IFallingObject> fallingObjects;
-    private int points = 0;
+    private static int points = 0;
     private static int height=700;
     private static int width = 400;
     public static PApplet processing;
     public static boolean canAdd = true;
     public static int lastBlockX = 0;
+    private static int lives = 3;
+    private static int shield = 0;
+    private static boolean itemCheck = false;
     private static GameRecordDbServices db;
     public static void main(String[] args) {
         db = new GameRecordDbServices();
@@ -48,6 +56,18 @@ public class Main extends PApplet{
                 if (canAdd){
                     Block b = new Block((int) (0.13*width),(int)(0.4*width),2+points/20);
                     fallingObjects.add(b);
+                    if (!itemCheck && points%20==0&&points!=0) {
+                        if (new Random().nextInt(3)==0){
+                            Heart h = new Heart((int) (0.06 * width),2+points/20);
+                            fallingObjects.add(h);
+                        }else if(new Random().nextInt(3)==1){
+                            Shield s = new Shield((int) (0.06 * width),2+points/20);
+                            fallingObjects.add(s);
+                        }
+                        itemCheck = true;
+                    }else{
+                        itemCheck = false;
+                    }
                     canAdd = false;
                 }
                 for (int i = 0;i<fallingObjects.size();i++){
@@ -55,14 +75,20 @@ public class Main extends PApplet{
                     if (obj.Fall()){
                         fallingObjects.remove(obj);
                         i--;
-                        points++;
+                        if (obj instanceof Block){
+                            points++;
+                        }
                     }
                 }
 
 
             drawButton("Pause",5,5,100,50,20);
-                fill(0);
-            text("Points: "+points,width-100,15);
+                fill(255,0,0);
+            text("Lives: "+lives,width-100,15);
+            fill(20,255,150);
+            text("Shield: "+shield,width-200,15);
+            fill(0);
+            text("Points: "+points,width-100,45);
         }else {
             if (gameOver){
                 background(0);
@@ -117,6 +143,9 @@ public class Main extends PApplet{
         pause=false;
         gameOver = false;
         canAdd = true;
+        lives = 3;
+        shield = 0;
+        itemCheck = false;
         points = 0;
     }
 
@@ -139,5 +168,28 @@ public class Main extends PApplet{
         textSize(fontSize);
         textAlign(CENTER, CENTER);
         text(label, x + (buttonWidth/2), y + (buttonHeight/2));
+    }
+    public static void hitBlock(){
+        if (shield>0){
+            shield--;
+        }else {
+            lives--;
+            if (lives <= 0){
+                gameLost();
+            }
+        }
+    }
+
+    public static void hitHeart(){
+        lives++;
+    }
+    public static void hitShield(){
+        shield++;
+    }
+    private static void gameLost(){
+        gameOver = true;
+        pause = true;
+        GameRecord gr = new GameRecord((new Date()).toString(),points);
+        db.add(gr);
     }
 }

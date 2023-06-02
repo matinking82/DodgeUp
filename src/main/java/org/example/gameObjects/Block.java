@@ -46,8 +46,8 @@ public class Block implements IShowableObject, IFallingObject {
 
         if (y>Main.getHeight()-Main.human.height-height){
             if (Main.human.x>x-(Main.human.width/2)&&Main.human.x<x+width+(Main.human.width/2)){
-                Main.gameOver = true;
-                Main.pause = true;
+                Main.hitBlock();
+                return true;
             }
         }
 
