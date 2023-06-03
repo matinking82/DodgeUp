@@ -30,6 +30,7 @@ public class Main extends PApplet{
     public static int shield = 0;
     public static int speed = 2;
     public static boolean itemCheck = false;
+    private static boolean records = false;
     private static GameRecordDbServices db;
     public static void main(String[] args) {
         db = new GameRecordDbServices();
@@ -96,8 +97,8 @@ public class Main extends PApplet{
             fill(0);
             text("Points: "+points,width-100,45);
         }else {
-            if (gameOver){
                 background(0);
+            if (gameOver){
                 textSize(40);
                 fill(255, 153, 0);
                 text("Game Over", (float) (0.5*width),(int) (0.2*height));
@@ -108,11 +109,31 @@ public class Main extends PApplet{
                 drawButton("Quit",(int) (0.3*width),(int) (0.2*height)+210,(int) (0.4*width),50,20);
 
             }else {
-                fill(200);
-                rect((float) (width*0.1),(float) (height*0.2),(float) (width*0.8),230);
-                drawButton("Resume",(int) (0.3*width),(int) (0.2*height)+20,(int) (0.4*width),50,20);
-                drawButton("Restart",(int) (0.3*width),(int) (0.2*height)+90,(int) (0.4*width),50,20);
-                drawButton("Quit",(int) (0.3*width),(int) (0.2*height)+160,(int) (0.4*width),50,20);
+                if (!records){
+                    fill(200);
+                    rect((float) (width*0.1),(float) (height*0.2),(float) (width*0.8),300);
+                    drawButton("Resume",(int) (0.3*width),(int) (0.2*height)+20,(int) (0.4*width),50,20);
+                    drawButton("Restart",(int) (0.3*width),(int) (0.2*height)+90,(int) (0.4*width),50,20);
+                    drawButton("Records",(int) (0.3*width),(int) (0.2*height)+160,(int) (0.4*width),50,20);
+                    drawButton("Quit",(int) (0.3*width),(int) (0.2*height)+230,(int) (0.4*width),50,20);
+                }else {
+                    fill(200);
+                    rect((float) (width*0.05),(float) (height*0.1),(float) (width*0.9),(float) (height*0.8));
+                    fill(255,100,100);
+                    textSize(25);
+                    text("Top Five Records: ",150,(float) (height*0.05));
+                    List<GameRecord> gameRecords = db.getTopFive();
+                    int pad = 50;
+                    for (GameRecord gr :
+                            gameRecords) {
+                        textSize(18);
+                        fill(0);
+                        text(gr.getDate(),(float) (width*0.5),(float) (height*0.1)+pad);
+                        text("Points: "+gr.getPoints(),(float) (width*0.5),(float) (height*0.1)+pad+30);
+                        line((float) (width*0.05),(float) (height*0.1)+pad+60,(float) (width*0.95),(float) (height*0.1)+pad+60);
+                        pad+=100;
+                    }
+                }
             }
         }
     }
@@ -131,22 +152,28 @@ public class Main extends PApplet{
                     quit();
                 }
             }else {
-                if (mouseX>0.3*width&&mouseX<0.7*width&&mouseY>(0.2*height)+20&&mouseY<(0.2*height)+70){
-                    if (fallingObjects.size()==0){
-                        List<Block> blocks = db.LoadGame();
-                        for (Block b :
-                                blocks) {
-                            fallingObjects.add(b);
-                            if (!b.check){
-                                canAdd = false;
+                if (!records){
+                    if (mouseX>0.3*width&&mouseX<0.7*width&&mouseY>(0.2*height)+20&&mouseY<(0.2*height)+70){
+                        if (fallingObjects.size()==0){
+                            List<Block> blocks = db.LoadGame();
+                            for (Block b :
+                                    blocks) {
+                                fallingObjects.add(b);
+                                if (!b.check){
+                                    canAdd = false;
+                                }
                             }
                         }
+                        pause = false;
+                    }else if (mouseX>0.3*width&&mouseX<0.7*width&&mouseY>(0.2*height)+90&&mouseY<(0.2*height)+140){
+                        restart();
+                    }else if (mouseX>0.3*width&&mouseX<0.7*width&&mouseY>(0.2*height)+160&&mouseY<(0.2*height)+210){
+                        records=true;
+                    }else if (mouseX>0.3*width&&mouseX<0.7*width&&mouseY>(0.2*height)+230&&mouseY<(0.2*height)+280){
+                        quit();
                     }
-                    pause = false;
-                }else if (mouseX>0.3*width&&mouseX<0.7*width&&mouseY>(0.2*height)+90&&mouseY<(0.2*height)+140){
-                    restart();
-                }else if (mouseX>0.3*width&&mouseX<0.7*width&&mouseY>(0.2*height)+160&&mouseY<(0.2*height)+210){
-                    quit();
+                }else {
+                    records = false;
                 }
             }
         }
