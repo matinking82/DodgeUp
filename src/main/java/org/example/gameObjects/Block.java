@@ -7,15 +7,24 @@ import org.example.gameObjects.interfaces.IShowableObject;
 import java.util.Random;
 
 public class Block implements IShowableObject, IFallingObject {
-    private boolean check = false;
-    private int x;
-    private int y;
-    private int width;
-    private int height;
-    private int r;
-    private int g;
-    private int b;
-
+    public boolean check = false;
+    public int x;
+    public int y;
+    public int width;
+    public int height;
+    public int r;
+    public int g;
+    public int b;
+    public Block(int width, int height,int x,int y,int r,int g, int b,boolean check) {
+        this.width = width;
+        this.height= height;
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.check = check;
+    }
     public Block(int width, int height){
         this.width = width;
         this.height = height;

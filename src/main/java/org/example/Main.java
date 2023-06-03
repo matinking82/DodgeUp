@@ -20,16 +20,16 @@ public class Main extends PApplet{
     public static boolean gameOver = false;
     public static boolean pause = true;
     private List<IFallingObject> fallingObjects;
-    private static int points = 0;
     private static int height=700;
     private static int width = 400;
     public static PApplet processing;
     public static boolean canAdd = true;
+    public static int points = 0;
     public static int lastBlockX = 0;
-    private static int lives = 3;
-    private static int shield = 0;
+    public static int lives = 3;
+    public static int shield = 0;
     public static int speed = 2;
-    private static boolean itemCheck = false;
+    public static boolean itemCheck = false;
     private static GameRecordDbServices db;
     public static void main(String[] args) {
         db = new GameRecordDbServices();
@@ -132,6 +132,16 @@ public class Main extends PApplet{
                 }
             }else {
                 if (mouseX>0.3*width&&mouseX<0.7*width&&mouseY>(0.2*height)+20&&mouseY<(0.2*height)+70){
+                    if (fallingObjects.size()==0){
+                        List<Block> blocks = db.LoadGame();
+                        for (Block b :
+                                blocks) {
+                            fallingObjects.add(b);
+                            if (!b.check){
+                                canAdd = false;
+                            }
+                        }
+                    }
                     pause = false;
                 }else if (mouseX>0.3*width&&mouseX<0.7*width&&mouseY>(0.2*height)+90&&mouseY<(0.2*height)+140){
                     restart();
@@ -144,6 +154,16 @@ public class Main extends PApplet{
     }
 
     private void quit() {
+        db.deleteAllBlocks();
+        if (!gameOver){
+            for (IFallingObject obj :
+                    fallingObjects) {
+                if (obj instanceof Block){
+                    db.addBlock((Block) obj);
+                }
+            }
+            db.SaveGame();
+        }
         exit();
     }
 
