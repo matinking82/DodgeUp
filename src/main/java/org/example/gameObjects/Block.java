@@ -12,20 +12,18 @@ public class Block implements IShowableObject, IFallingObject {
     private int y;
     private int width;
     private int height;
-    private int speed;
     private int r;
     private int g;
     private int b;
 
-    public Block(int width, int height, int speed){
+    public Block(int width, int height){
         this.width = width;
         this.height = height;
-        this.speed = speed;
 
         do {
             x = new Random().nextInt((Main.getWidth()-width)+1);
         }while (x>(Main.lastBlockX-(2.5*width))&&x<(Main.lastBlockX+(3.5*width)));
-
+        y = -height;
         Main.lastBlockX = x;
         Random random = new Random();
         r = random.nextInt(256);
@@ -37,9 +35,9 @@ public class Block implements IShowableObject, IFallingObject {
 
     @Override
     public boolean Fall() {
-        y+=speed;
+        y+=Main.speed;
         showObject();
-        if (!check&& y>height*1.1){
+        if (!check&& y>10){
             check = true;
             Main.canAdd = true;
         }

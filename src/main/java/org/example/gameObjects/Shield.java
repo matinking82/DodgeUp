@@ -8,10 +8,8 @@ public class Shield implements IShowableObject, IFallingObject {
     private int x;
     private int y;
     private int width;
-    private int speed;
-    public Shield(int width,int speed){
+    public Shield(int width){
         this.width = width;
-        this.speed = speed;
 
         if (Main.lastBlockX>Main.getWidth()/2){
             x = Main.lastBlockX/2;
@@ -23,7 +21,7 @@ public class Shield implements IShowableObject, IFallingObject {
     }
     @Override
     public boolean Fall() {
-        y+=speed;
+        y+=Main.speed;
         showObject();
         if (y>Main.getHeight()-Main.human.height-width){
             if (x>(Main.human.x-(Main.human.width/2)-width)&& x<(Main.human.x+(Main.human.width/2))){

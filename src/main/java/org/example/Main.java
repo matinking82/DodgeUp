@@ -18,7 +18,7 @@ public class Main extends PApplet{
 
     public static Human human;
     public static boolean gameOver = false;
-    public static boolean pause = false;
+    public static boolean pause = true;
     private List<IFallingObject> fallingObjects;
     private static int points = 0;
     private static int height=700;
@@ -28,6 +28,7 @@ public class Main extends PApplet{
     public static int lastBlockX = 0;
     private static int lives = 3;
     private static int shield = 0;
+    public static int speed = 2;
     private static boolean itemCheck = false;
     private static GameRecordDbServices db;
     public static void main(String[] args) {
@@ -40,6 +41,8 @@ public class Main extends PApplet{
         processing = this;
         human = new Human(0,(int)(0.10*height),(int)(0.10*width));
         fallingObjects = new ArrayList<IFallingObject>();
+        background(240);
+
     }
 
     @Override
@@ -54,14 +57,14 @@ public class Main extends PApplet{
                 human.moveObject();
                 human.showObject();
                 if (canAdd){
-                    Block b = new Block((int) (0.13*width),(int)(0.4*width),2+points/20);
+                    Block b = new Block((int) (0.13*width),(int)(0.4*width));
                     fallingObjects.add(b);
                     if (!itemCheck && points%20==0&&points!=0) {
                         if (new Random().nextInt(3)==0){
-                            Heart h = new Heart((int) (0.06 * width),2+points/20);
+                            Heart h = new Heart((int) (0.06 * width));
                             fallingObjects.add(h);
                         }else if(new Random().nextInt(3)==1){
-                            Shield s = new Shield((int) (0.06 * width),2+points/20);
+                            Shield s = new Shield((int) (0.06 * width));
                             fallingObjects.add(s);
                         }
                         itemCheck = true;
@@ -77,6 +80,9 @@ public class Main extends PApplet{
                         i--;
                         if (obj instanceof Block){
                             points++;
+                            if (points%20 == 0){
+                                speed++;
+                            }
                         }
                     }
                 }
@@ -94,7 +100,10 @@ public class Main extends PApplet{
                 background(0);
                 textSize(40);
                 fill(255, 153, 0);
-                text("Game Over", (float) (0.5*width),(int) (0.2*height)+70);
+                text("Game Over", (float) (0.5*width),(int) (0.2*height));
+                textSize(25);
+                fill(255);
+                text("Your record: "+points, (float) (0.5*width),(int) (0.2*height)+70);
                 drawButton("Restart",(int) (0.3*width),(int) (0.2*height)+140,(int) (0.4*width),50,20);
                 drawButton("Quit",(int) (0.3*width),(int) (0.2*height)+210,(int) (0.4*width),50,20);
 
@@ -146,6 +155,7 @@ public class Main extends PApplet{
         lives = 3;
         shield = 0;
         itemCheck = false;
+        speed = 2;
         points = 0;
     }
 
