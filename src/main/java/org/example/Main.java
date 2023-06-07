@@ -61,10 +61,11 @@ public class Main extends PApplet{
                     Block b = new Block((int) (0.13*width),(int)(0.4*width));
                     fallingObjects.add(b);
                     if (!itemCheck && points%20==0&&points!=0) {
-                        if (new Random().nextInt(3)==0){
+                        Random rndm = new Random();
+                        if (rndm.nextInt()%3==0){
                             Heart h = new Heart((int) (0.06 * width));
                             fallingObjects.add(h);
-                        }else if(new Random().nextInt(3)==1){
+                        }else if(rndm.nextInt()%3==1){
                             Shield s = new Shield((int) (0.06 * width));
                             fallingObjects.add(s);
                         }

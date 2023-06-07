@@ -16,6 +16,7 @@ public class Shield implements IShowableObject, IFallingObject {
         }else {
             x = (Main.lastBlockX+Main.getWidth())/2;
         }
+        y = -(3*width);
 
         showObject();
     }
